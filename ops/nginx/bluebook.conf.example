@@ -2,15 +2,16 @@ server {
     listen 80;
     server_name your-domain.com;
 
+    # 文件上传大小限制
     client_max_body_size 20m;
 
-    # Frontend static files
+    # 前端静态文件
     location / {
         root /www/wwwroot/bluebook/vue-dist;
         try_files $uri $uri/ /index.html;
     }
 
-    # Backend API
+    # 后端 API
     location /api/ {
         proxy_pass http://127.0.0.1:9090;
         proxy_set_header Host $host;
@@ -19,7 +20,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Uploaded image static mapping
+    # 上传图片静态映射
     location /uploads/ {
         alias /www/wwwroot/bluebook/files/;
         autoindex off;
