@@ -14,3 +14,20 @@ node_modules/
 # 系统文件
 .DS_Store
 Thumbs.db
+
+# 敏感配置（真实值存于 .bluebook-secrets/ 本地目录）
+src/main/resources/application.yaml
+src/main/resources/application-prod.yaml
+
+# 用户上传文件
+files/
+
+# 毕设文档（个人资料，不上传）
+毕设文档/
+
+# Vue 构建产物
+vue/dist/
+vue/dist.zip
+
+# 本地密钥参考目录
+.bluebook-secrets/
