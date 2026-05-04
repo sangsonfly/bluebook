@@ -49,6 +49,7 @@
 │  ├─ src/views/                           # 前后台页面
 │  ├─ src/router/                          # 路由与守卫
 │  └─ config/                              # 前端配置
+├─ nginx/                                   # Nginx 配置
 └─ sql/bluebook_complete.sql               # 数据库初始化脚本
 ```
 
@@ -183,7 +184,7 @@ npm run dev
 
 ## 10. 图片持久化部署（Nginx）
 
-- Nginx 示例配置：`ops/nginx/bluebook.conf.example`
+- Nginx 配置：`nginx/nginx.conf`
 - 运维检查与备份建议：`ops/maintenance/image-storage-ops.md`
 - 后端访问地址配置：
   - `file.upload.path`：上传目录（必须绝对路径）
