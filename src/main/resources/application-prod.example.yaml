@@ -5,9 +5,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.137.188.232:3306/bluebook?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
-    username: sangsang  # 改为你创建的数据库用户名
-    password: 1433174509@Qq  # 改为数据库密码
+    url: jdbc:mysql://your_server_ip:3306/bluebook?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+    username: your_db_username
+    password: your_db_password
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     serialization:
@@ -29,9 +29,9 @@ mybatis-plus:
 # 文件上传配置
 file:
   upload:
-    path: /www/wwwroot/bluebook/files/
+    path: /www/wwwroot/bluebook/files/        # 改为你的服务器路径
   access:
-    domain: http://172.18.180.180
+    domain: http://your_server_ip_or_domain   # 改为你的服务器 IP 或域名
     prefix: /uploads/
 
 # 日志配置
@@ -45,7 +45,7 @@ logging:
 ai:
   enabled: true
   base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
-  api-key: sk-f9309f2f6c3b4067b4524d92d2023735
-  model: qwen-turbo 
+  api-key: your_aliyun_api_key                 # 去 https://dashscope.console.aliyun.com/ 获取
+  model: qwen-turbo
   timeout-ms: 12000
   rate-limit-per-minute: 10
