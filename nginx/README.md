@@ -1,25 +1,33 @@
-# Nginx 配置
+# Nginx — BlueBook 完整环境
 
-## 使用方式
+## 快速开始
 
-1. 将 `nginx.conf` 复制到服务器 Nginx 配置目录：
+双击运行 `setup.bat`，自动下载 Nginx 并完成初始化。
 
-   ```bash
-   cp nginx.conf /etc/nginx/conf.d/bluebook.conf
-   ```
+## 启动 / 停止
 
-2. 修改 `server_name` 为你的域名或 IP
+```bash
+nginx.exe                  # 启动
+nginx.exe -s reload        # 重载配置（修改配置后）
+nginx.exe -s stop          # 停止
+```
 
-3. 测试并重载：
+## 配置说明
 
-   ```bash
-   nginx -t && systemctl reload nginx
-   ```
+| 文件 | 用途 |
+|------|------|
+| `conf/nginx.conf` | 主配置（已集成 BlueBook 前端、API、图片映射） |
+| `conf/mime.types` | MIME 类型映射 |
+| `html/` | 默认站点目录（可忽略，由 vue-dist 接管根路径） |
 
-## 路径对应
+## 监听端口
 
-| 配置项 | 路径 | 说明 |
-|--------|------|------|
-| 前端文件 | `/www/wwwroot/bluebook/vue-dist` | `vue/dist/` 打包后上传到此目录 |
-| 后端接口 | `http://127.0.0.1:9090` | Spring Boot 默认端口 |
-| 上传图片 | `/www/wwwroot/bluebook/files/` | 对应 `file.upload.path` 配置 |
+- `80` — 前端静态 + API 代理 + 图片访问
+
+## 项目对接
+
+| Nginx 路径 | 后端配置项 | 值 |
+|-----------|-----------|-----|
+| `/www/wwwroot/bluebook/vue-dist` | — | 前端打包后上传到此 |
+| `http://127.0.0.1:9090` | `server.port` | 9090 |
+| `/www/wwwroot/bluebook/files/` | `file.upload.path` | 上传文件目录 |

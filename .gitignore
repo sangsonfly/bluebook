@@ -28,3 +28,9 @@ vue/dist.zip
 
 # 本地密钥参考目录
 .bluebook-secrets/
+
+# Nginx 二进制（通过 setup.bat 下载）
+nginx/nginx.exe
+nginx/logs/
+nginx/temp/
+nginx/nginx-temp.zip
