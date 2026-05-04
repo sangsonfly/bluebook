@@ -39,7 +39,7 @@ logging:
   level:
     root: INFO
     com.example.springboot: INFO
-  file:c
+  file:
     name: /www/wwwroot/bluebook/logs/application.log
 
 ai:
