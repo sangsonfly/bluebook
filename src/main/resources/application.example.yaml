@@ -1,0 +1,45 @@
+server:
+  port: 9090
+  ip: localhost
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bluebook?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+    username: root
+    password: your_mysql_password
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      update-strategy: IGNORED
+
+# 文件上传配置
+file:
+  upload:
+    path: E:/bluebook/files/       # 改为你的本地绝对路径
+  access:
+    domain: http://localhost:8082
+    prefix: /uploads/
+
+ip: 127.0.0.1
+
+ai:
+  enabled: true
+  base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api-key: your_aliyun_api_key     # 去 https://dashscope.console.aliyun.com/ 获取
+  model: qwen-turbo
+  timeout-ms: 10000
+  rate-limit-per-minute: 10
