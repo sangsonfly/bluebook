@@ -22,9 +22,6 @@ src/main/resources/application-prod.yaml
 # 用户上传文件
 files/
 
-# 毕设文档（个人资料，不上传）
-毕设文档/
-
 # Vue 构建产物
 vue/dist/
 vue/dist.zip
