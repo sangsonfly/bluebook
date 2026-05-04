@@ -1,0 +1,51 @@
+server:
+  port: 9090
+  ip: 0.0.0.0
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://8.137.188.232:3306/bluebook?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+    username: sangsang  # 改为你创建的数据库用户名
+    password: 1433174509@Qq  # 改为数据库密码
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      update-strategy: IGNORED
+
+# 文件上传配置
+file:
+  upload:
+    path: /www/wwwroot/bluebook/files/
+  access:
+    domain: http://172.18.180.180
+    prefix: /uploads/
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.example.springboot: INFO
+  file:c
+    name: /www/wwwroot/bluebook/logs/application.log
+
+ai:
+  enabled: true
+  base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api-key: sk-f9309f2f6c3b4067b4524d92d2023735
+  model: qwen-turbo 
+  timeout-ms: 12000
+  rate-limit-per-minute: 10
