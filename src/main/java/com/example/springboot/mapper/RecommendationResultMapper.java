@@ -12,9 +12,9 @@ import org.apache.ibatis.annotations.Select;
 public interface RecommendationResultMapper extends BaseMapper<RecommendationResult> {
     
     /**
-     * 根据用户ID和算法类型查询推荐结果
+     * 根据用户ID查询推荐结果
      */
-    @Select("SELECT * FROM recommendation_result WHERE user_id = #{userId} AND algorithm_type = #{algorithmType}")
-    RecommendationResult selectByUserAndType(Integer userId, Integer algorithmType);
+    @Select("SELECT * FROM recommendation_result WHERE user_id = #{userId}")
+    RecommendationResult selectByUser(Integer userId);
 }
 

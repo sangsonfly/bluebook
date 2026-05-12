@@ -562,13 +562,12 @@ CREATE TABLE `recommendation_result` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
   `user_id` INT NOT NULL COMMENT '用户ID',
   `note_ids` TEXT NOT NULL COMMENT '推荐的笔记ID列表（逗号分隔）',
-  `algorithm_type` TINYINT DEFAULT 1 COMMENT '算法类型 1-协同过滤 2-基于内容',
   `score` DECIMAL(10,2) DEFAULT 0 COMMENT '推荐质量评分',
   `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '生成时间',
   `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_user_algorithm` (`user_id`, `algorithm_type`),
+  KEY `idx_user_id` (`user_id`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推荐结果缓存表';
 
@@ -749,14 +748,12 @@ INSERT INTO `note_tag` (`note_id`, `tag_id`) VALUES
 --    推荐算法应用：最高权重行为（权重2.5），用于识别优质内容
 --
 -- 4. tag - 标签表
---    用途：标签独立管理，支持热门标签统计和标签推荐
---    关键：为基于内容的推荐提供数据支持
---    推荐算法应用：用于计算内容相似度，缓解冷启动问题
+--    用途：标签独立管理，支持热门标签统计
+--    关键：为笔记提供标签分类能力
 --
 -- 5. note_tag - 笔记标签关联表
 --    用途：多对多关系，一篇笔记可以有多个标签
---    关键：支持基于标签的内容推荐和相似内容查找
---    推荐算法应用：通过标签匹配实现基于内容的推荐
+--    关键：建立笔记和标签的多对多关联关系
 --
 -- 推荐算法数据流：
 -- ┌─────────────────────────────────────────────────────────────┐
@@ -768,16 +765,6 @@ INSERT INTO `note_tag` (`note_id`, `tag_id`) VALUES
 -- │ + user_share（分享记录）                                     │
 -- │   → 计算用户相似度矩阵                                       │
 -- │   → 生成协同过滤推荐结果                                     │
--- └─────────────────────────────────────────────────────────────┘
---
--- ┌─────────────────────────────────────────────────────────────┐
--- │ 基于内容的推荐（缓解冷启动）                                 │
--- ├─────────────────────────────────────────────────────────────┤
--- │ tag（标签库）                                               │
--- │ + note_tag（内容标签关联）                                   │
--- │ + user_interest（用户兴趣标签）                              │
--- │   → 计算内容相似度                                           │
--- │   → 为新用户推荐热门标签内容                                 │
 -- └─────────────────────────────────────────────────────────────┘
 --
 -- 数据完整性说明：

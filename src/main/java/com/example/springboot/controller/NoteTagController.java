@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 笔记标签关联Controller
- * 提供笔记标签管理、相似内容推荐等API
+ * 提供笔记标签管理等API
  */
 @RestController
 @RequestMapping("/api/noteTag")
@@ -92,16 +92,6 @@ public class NoteTagController {
     public Result getNotesByTagId(@RequestParam Integer tagId,
                                  @RequestParam(required = false) Integer limit) {
         List<Note> notes = noteTagService.getNotesByTagId(tagId, limit);
-        return Result.success(notes);
-    }
-    
-    /**
-     * 获取相似笔记（基于共同标签）
-     */
-    @GetMapping("/similar")
-    public Result getSimilarNotes(@RequestParam Integer noteId,
-                                 @RequestParam(defaultValue = "10") Integer limit) {
-        List<Note> notes = noteTagService.getSimilarNotes(noteId, limit);
         return Result.success(notes);
     }
     

@@ -46,16 +46,5 @@ public interface NoteTagMapper extends BaseMapper<NoteTag> {
     @Select("SELECT COUNT(*) FROM note_tag WHERE note_id = #{noteId} AND tag_id = #{tagId}")
     int existsRelation(@Param("noteId") Integer noteId, @Param("tagId") Integer tagId);
     
-    /**
-     * 获取相似笔记（基于共同标签数量）
-     */
-    @Select("SELECT nt2.note_id, COUNT(*) as common_tags " +
-            "FROM note_tag nt1 " +
-            "INNER JOIN note_tag nt2 ON nt1.tag_id = nt2.tag_id " +
-            "WHERE nt1.note_id = #{noteId} AND nt2.note_id != #{noteId} " +
-            "GROUP BY nt2.note_id " +
-            "ORDER BY common_tags DESC " +
-            "LIMIT #{limit}")
-    List<Integer> findSimilarNoteIds(@Param("noteId") Integer noteId, @Param("limit") Integer limit);
 }
 
