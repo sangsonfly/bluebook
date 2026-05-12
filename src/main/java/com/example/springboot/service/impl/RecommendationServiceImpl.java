@@ -37,9 +37,6 @@ public class RecommendationServiceImpl implements IRecommendationService {
     @Resource
     private NoteMapper noteMapper;
     
-    /** 算法类型：协同过滤 */
-    private static final int ALGORITHM_TYPE_COLLABORATIVE = 1;
-    
     /** 相似用户数量 */
     private static final int SIMILAR_USER_COUNT = 20;
     
@@ -54,8 +51,7 @@ public class RecommendationServiceImpl implements IRecommendationService {
         }
         
         // 尝试从预计算结果中获取
-        RecommendationResult cachedResult = recommendationResultMapper.selectByUserAndType(
-                userId, ALGORITHM_TYPE_COLLABORATIVE);
+        RecommendationResult cachedResult = recommendationResultMapper.selectByUser(userId);
         
         List<Note> recommendedNotes = new ArrayList<>();
         
@@ -197,8 +193,7 @@ public class RecommendationServiceImpl implements IRecommendationService {
                     .orElse(0.0);
             
             // 保存或更新推荐结果
-            RecommendationResult existing = recommendationResultMapper.selectByUserAndType(
-                    userId, ALGORITHM_TYPE_COLLABORATIVE);
+            RecommendationResult existing = recommendationResultMapper.selectByUser(userId);
             
             if (existing != null) {
                 // 更新现有记录
@@ -211,7 +206,6 @@ public class RecommendationServiceImpl implements IRecommendationService {
                 RecommendationResult result = new RecommendationResult();
                 result.setUserId(userId);
                 result.setNoteIds(noteIdsStr);
-                result.setAlgorithmType(ALGORITHM_TYPE_COLLABORATIVE);
                 result.setScore(BigDecimal.valueOf(avgScore));
                 result.setCreateTime(LocalDateTime.now());
                 result.setUpdateTime(LocalDateTime.now());

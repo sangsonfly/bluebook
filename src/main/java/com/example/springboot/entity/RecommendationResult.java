@@ -26,12 +26,6 @@ public class RecommendationResult implements Serializable {
     /** 推荐的笔记ID列表（逗号分隔） */
     private String noteIds;
     
-    /** 
-     * 算法类型 
-     * 1-协同过滤 2-基于内容
-     */
-    private Integer algorithmType;
-    
     /** 推荐质量评分 */
     private BigDecimal score;
     

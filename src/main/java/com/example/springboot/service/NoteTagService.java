@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * 笔记标签关联服务
- * 提供笔记标签管理、相似内容推荐等功能
+ * 提供笔记标签管理功能
  */
 @Slf4j
 @Service
@@ -142,23 +142,6 @@ public class NoteTagService extends ServiceImpl<NoteTagMapper, NoteTag> {
         if (limit != null && limit > 0) {
             wrapper.last("LIMIT " + limit);
         }
-        
-        return noteMapper.selectList(wrapper);
-    }
-    
-    /**
-     * 获取相似笔记（基于共同标签）
-     */
-    public List<Note> getSimilarNotes(Integer noteId, Integer limit) {
-        List<Integer> similarNoteIds = this.baseMapper.findSimilarNoteIds(noteId, limit != null ? limit : 10);
-        
-        if (similarNoteIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-        
-        QueryWrapper<Note> wrapper = new QueryWrapper<>();
-        wrapper.in("id", similarNoteIds)
-               .eq("status", 1);
         
         return noteMapper.selectList(wrapper);
     }
