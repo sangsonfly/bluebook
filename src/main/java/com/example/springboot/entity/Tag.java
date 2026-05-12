@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * 标签表
- * 支持内容分类和基于内容的推荐
+ * 支持内容分类和标签管理
  */
 @Data
 @TableName("tag")
