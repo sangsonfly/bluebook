@@ -138,8 +138,9 @@ watch(
   () => `${route.path}|${route.query.q ?? ''}`,
   (newVal, oldVal) => {
     if (route.path === '/front/home') {
-      // 从内部页面（笔记详情/用户主页/社团详情）返回时，不重新加载推荐
-      if (oldVal && oldVal.startsWith('/front/')) {
+      // 从其他内部页面（笔记详情/用户主页/社团详情）返回时，不重新加载推荐
+      const oldPath = oldVal?.split('|')[0]
+      if (oldPath && oldPath.startsWith('/front/') && oldPath !== '/front/home') {
         return
       }
       loadNotes()
