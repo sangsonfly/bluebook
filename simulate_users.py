@@ -8,11 +8,18 @@ import requests
 import random
 import time
 import json
+import sys
+
+# Windows 终端默认 GBK 不支持 emoji，强制使用 UTF-8
+try:
+    sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
 
 # ============================================================
 # 配置
 # ============================================================
-BASE = 'http://localhost'
+BASE = 'http://localhost:9090'  # 直连后端，不走 nginx（避免 /web/ 路径被 try_files 拦截）
 RUN_ID = time.strftime('%H%M')
 
 def green(s): return f'\033[92m{s}\033[0m'
@@ -197,7 +204,13 @@ def api_post(path, data, token=None):
         headers['token'] = token
     try:
         resp = requests.post(f'{BASE}{path}', headers=headers, json=data, timeout=10)
-        return resp.json() if resp.text else {}
+        if not resp.text:
+            return {}
+        return resp.json()
+    except requests.exceptions.ConnectionError:
+        return {'code': '-1', 'msg': '无法连接服务器，请确认后端已启动'}
+    except json.JSONDecodeError:
+        return {'code': '-1', 'msg': f'服务器返回非JSON数据 (HTTP {resp.status_code})'}
     except Exception as e:
         return {'code': '-1', 'msg': str(e)}
 
@@ -209,7 +222,13 @@ def api_get(path, token=None):
         headers['token'] = token
     try:
         resp = requests.get(f'{BASE}{path}', headers=headers, timeout=10)
-        return resp.json() if resp.text else {}
+        if not resp.text:
+            return {}
+        return resp.json()
+    except requests.exceptions.ConnectionError:
+        return {'code': '-1', 'msg': '无法连接服务器，请确认后端已启动'}
+    except json.JSONDecodeError:
+        return {'code': '-1', 'msg': f'服务器返回非JSON数据 (HTTP {resp.status_code})'}
     except Exception as e:
         return {'code': '-1', 'msg': str(e)}
 
