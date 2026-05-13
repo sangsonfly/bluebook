@@ -136,8 +136,12 @@ const loadNotes = async () => {
 
 watch(
   () => `${route.path}|${route.query.q ?? ''}`,
-  () => {
+  (newVal, oldVal) => {
     if (route.path === '/front/home') {
+      // 从内部页面（笔记详情/用户主页/社团详情）返回时，不重新加载推荐
+      if (oldVal && oldVal.startsWith('/front/')) {
+        return
+      }
       loadNotes()
     }
   },
