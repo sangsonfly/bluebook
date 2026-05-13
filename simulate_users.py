@@ -5,7 +5,6 @@
 """
 
 import requests
-import random
 import time
 import json
 import sys
@@ -29,13 +28,6 @@ def red(s): return f'\033[91m{s}\033[0m'
 stats = {
     'registered': 0,
     'notes_published': 0,
-    'likes': 0,
-    'collects': 0,
-    'comments': 0,
-    'follows': 0,
-    'club_joins': 0,
-    'activity_regs': 0,
-    'messages': 0,
 }
 
 # ============================================================
@@ -475,125 +467,32 @@ def main():
         all_users.append((uid, token, u['nick'], avatar))
         print(f'    🆔 ID={uid} 昵称={u["nick"]}')
 
-        # 发布笔记 (1-3篇)
-        publish_count = random.randint(1, 3)
-        for i in range(publish_count):
-            cat_map = {
-                '学霸': '学习经验', '技术': '学习经验', '考研': '学习经验',
-                '美食': '美食', '运动': '运动健身', '摄影': '校园风景',
-                '社交': '社团活动', '文艺': '其他', '交易': '二手市场',
-                '萌新': random.choice(['美食', '寝室生活', '其他']),
-            }
-            cat = cat_map.get(u['persona'], '其他')
-            if cat not in NOTE_TEMPLATES or random.random() > 0.6:
-                cat = random.choice(list(NOTE_TEMPLATES.keys()))
-            template = random.choice(NOTE_TEMPLATES[cat]).copy()
-            template['category'] = cat
-            publish_note(token, uid, u['nick'], avatar, template)
+        # 发布该人设对应分类下的全部笔记
+        cat_map = {
+            '学霸': '学习经验', '技术': '学习经验', '考研': '学习经验',
+            '美食': '美食', '运动': '运动健身', '摄影': '校园风景',
+            '社交': '社团活动', '文艺': '其他', '交易': '二手市场',
+            '萌新': '其他',
+        }
+        cat = cat_map.get(u['persona'], '其他')
+        templates = NOTE_TEMPLATES.get(cat, [])
+        if not templates:
+            templates = NOTE_TEMPLATES.get('其他', [])
+        for template in templates:
+            t = template.copy()
+            t['category'] = cat
+            publish_note(token, uid, u['nick'], avatar, t)
             time.sleep(0.3)
-
-        # 获取笔记列表
-        note_ids = get_note_ids(token)
-
-        # 点赞 (2-5篇)
-        if note_ids:
-            like_count = random.randint(2, 5)
-            for _ in range(like_count):
-                nid = random.choice(note_ids)
-                if like_note(token, uid, nid):
-                    stats['likes'] += 1
-            print(f'    ❤️ 点赞 {like_count} 篇')
-
-        # 收藏 (1-3篇)
-        if note_ids:
-            collect_count = random.randint(1, 3)
-            for _ in range(collect_count):
-                nid = random.choice(note_ids)
-                if collect_note(token, uid, nid):
-                    stats['collects'] += 1
-            print(f'    ⭐ 收藏 {collect_count} 篇')
-
-        # 评论 (1-3篇)
-        if note_ids:
-            comment_count = random.randint(1, 3)
-            for _ in range(comment_count):
-                nid = random.choice(note_ids)
-                ctext = random.choice(COMMENTS)
-                if comment_note(token, uid, u['nick'], avatar, nid, ctext):
-                    stats['comments'] += 1
-            print(f'    💬 评论 {comment_count} 篇')
-
-        # 关注他人 (2-4人)
-        other_ids = [ou[0] for ou in all_users if ou[0] != uid]
-        if len(other_ids) >= 2:
-            follow_count = min(random.randint(2, 4), len(other_ids))
-            targets = random.sample(other_ids, follow_count)
-            for target in targets:
-                if follow_user(token, uid, target):
-                    stats['follows'] += 1
-            print(f'    👥 关注 {follow_count} 人')
-
-        # 发私信 (50%概率)
-        if len(other_ids) >= 1 and random.random() < 0.5:
-            target = random.choice(other_ids)
-            msgs = ['你好呀！看到你的笔记觉得很好，互关吗？',
-                    '同学你好，请问你笔记里提到的那个在哪里呀？',
-                    '哈喽，我也是这个社团的，认识一下！',
-                    '你的笔记写得太棒了，已关注！']
-            if send_message(token, uid, target, random.choice(msgs)):
-                stats['messages'] += 1
-                print(f'    ✉️ 发私信')
-
-        # 加入社团 (运动和社交类用户)
-        if u['persona'] in ['运动', '社交']:
-            if join_club(token, uid, 1):
-                stats['club_joins'] += 1
-                print(f'    🏛️ 加入社团')
-
-    # ---- Phase 3: 社团活动 ----
-    print('\n🏛️ Phase 3: 社团活动')
-    print('-' * 40)
-
-    sport_idx = next((i for i, u in enumerate(USERS) if u['persona'] in ['运动', '社交']), None)
-    if sport_idx is not None and sport_idx < len(all_users):
-        uid, token, nick, avatar = all_users[sport_idx]
-        activity_id = create_activity(
-            token, 1,
-            '周三下午羽毛球新手教学活动',
-            '面向零基础同学，由社团老成员提供免费指导，提供球拍和球，欢迎参加！',
-            '体育馆二楼羽毛球馆',
-            '2026-05-18 15:00:00', '2026-05-18 17:00:00',
-            20, '羽毛球,新手,教学'
-        )
-        if activity_id:
-            print(f'  ✅ 创建活动成功, ID={activity_id}')
-
-            # 找另一个用户报名
-            for i, u in enumerate(USERS):
-                if i != sport_idx and u['persona'] in ['运动', '社交'] and i < len(all_users):
-                    uid2, token2, nick2, avatar2 = all_users[i]
-                    if register_activity(token2, uid2, activity_id):
-                        stats['activity_regs'] += 1
-                        print(f'  ✅ {nick2} 报名活动')
-                    break
-        else:
-            print(f'  ⚠️ 创建活动失败（可能需要管理员权限）')
+        print(f'    📄 发布 {len(templates)} 篇笔记')
 
     # ---- 最终统计 ----
     print('\n' + '=' * 60)
     print('  📊 执行统计')
     print('=' * 60)
-    for k, v in stats.items():
-        label = {
-            'registered': '注册用户', 'notes_published': '发布笔记',
-            'likes': '点赞', 'collects': '收藏', 'comments': '评论',
-            'follows': '关注', 'club_joins': '加入社团',
-            'activity_regs': '活动报名', 'messages': '私信',
-        }.get(k, k)
-        print(f'  {label}:  {v}')
-    total = sum(stats.values())
+    print(f'  注册用户:  {stats["registered"]}')
+    print(f'  发布笔记:  {stats["notes_published"]}')
     print(f'  {"─" * 30}')
-    print(f'  总操作数:  {total}')
+    print(f'  总操作数:  {stats["registered"] + stats["notes_published"]}')
     print(f'\n  ✅ 脚本执行完毕！可重新运行以累积更多数据。')
 
 
