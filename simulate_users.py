@@ -330,7 +330,7 @@ def update_profile(token, uid, uname, nickname):
 
 def publish_note(token, uid, nickname, avatar, template):
     """发布笔记"""
-    seed = random.randint(1, 1000)
+    seed = int(time.time() * 1000) % 1000 + 1
     img_url = f'https://picsum.photos/seed/{seed}/400/300'
     body = api_post('/api/note', {
         'title': template['title'][:20],
