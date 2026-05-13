@@ -59,5 +59,12 @@ public interface UserBehaviorMapper extends BaseMapper<UserBehavior> {
             "WHERE create_time >= DATE_SUB(NOW(), INTERVAL 30 DAY) " +
             "LIMIT #{limit}")
     List<Integer> getActiveUserIds(@Param("limit") Integer limit);
+
+    /**
+     * 获取用户明确交互过的笔记ID（排除浏览，仅包含点赞/收藏/评论/分享）
+     * 用于推荐过滤：浏览过的笔记仍可出现在推荐中，但不推荐已点赞/收藏过的
+     */
+    @Select("SELECT DISTINCT note_id FROM user_behavior WHERE user_id = #{userId} AND behavior_type IN (2, 3, 4, 5)")
+    List<Integer> getExplicitInteractionNoteIds(@Param("userId") Integer userId);
 }
 

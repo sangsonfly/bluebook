@@ -100,8 +100,10 @@ public class RecommendationServiceImpl implements IRecommendationService {
         }
         
         Map<Integer, Double> userVector = RecommendationUtil.buildUserVector(userBehaviors);
-        Set<Integer> userInteractedNotes = userVector.keySet();
-        
+
+        // 只排除用户明确互动过的笔记（点赞/收藏/评论/分享），浏览过的笔记仍可出现在推荐中
+        Set<Integer> explicitInteractedNotes = new HashSet<>(userBehaviorMapper.getExplicitInteractionNoteIds(userId));
+
         // 获取相似用户
         List<Map<String, Object>> similarUsersData = userBehaviorMapper.getSimilarUsers(userId, SIMILAR_USER_COUNT);
         
@@ -128,8 +130,8 @@ public class RecommendationServiceImpl implements IRecommendationService {
                 Integer noteId = entry.getKey();
                 Double rating = entry.getValue();
                 
-                // 跳过用户已经交互过的笔记
-                if (userInteractedNotes.contains(noteId)) {
+                // 跳过用户已明确互动过的笔记（点赞/收藏/评论/分享），仅浏览过的允许出现
+                if (explicitInteractedNotes.contains(noteId)) {
                     continue;
                 }
                 
