@@ -179,7 +179,6 @@ const handleLike = async (id, event) => {
   try {
     await likeNote(id)
     ElMessage.success('点赞成功')
-    loadNotes()
   } catch {
     ElMessage.error('点赞失败')
   }
@@ -197,7 +196,6 @@ const handleCollect = async (id, event) => {
     const res = await collectNote(id, account.id)
     if (res.code === 200 || res.code === '200') {
       ElMessage.success(res.data ? '收藏成功' : '已取消收藏')
-      loadNotes()
     } else {
       ElMessage.error(res.msg || '操作失败')
     }
