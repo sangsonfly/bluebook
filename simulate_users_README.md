@@ -2,9 +2,10 @@
 
 ## 环境要求
 
-- Python 3
+- Python 3.7+
 - `requests` 库（`pip install requests`）
-- 能访问服务器 `localhost:80`（脚本在服务器上运行）
+- 能访问服务器 `localhost:80`（脚本需在后端服务器上运行）
+- Windows 用户无需额外配置，脚本已自动处理编码问题
 
 ## 运行方式
 
