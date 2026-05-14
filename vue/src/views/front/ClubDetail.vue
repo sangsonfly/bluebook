@@ -182,11 +182,6 @@ const handleJoin = async () => {
     router.push('/login')
     return
   }
-  if (Number(account.value?.isVerified) !== 1) {
-    ElMessage.warning('请先完成实名认证后再加入社团')
-    router.push('/front/person')
-    return
-  }
   try {
     const res = await joinClub(clubId.value)
     if (res.code === 200 || res.code === '200') {
@@ -194,6 +189,11 @@ const handleJoin = async () => {
       await loadClub()
       await loadMembershipFlags()
     } else {
+      if (res.msg && res.msg.includes('实名认证')) {
+        ElMessage.warning(res.msg)
+        router.push('/front/person')
+        return
+      }
       ElMessage.error(res.msg || '加入失败')
     }
   } catch (e) {

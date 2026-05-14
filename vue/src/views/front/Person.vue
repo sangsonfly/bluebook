@@ -83,6 +83,9 @@ const getAccount = () => {
       verifyForm.college = res.data.college || ''
       verifyForm.major = res.data.major || ''
       verifyForm.grade = res.data.grade || ''
+      // 同步认证状态到 localStorage，避免其他页面读到旧数据
+      account.value = { ...account.value, ...res.data }
+      localStorage.setItem('account', JSON.stringify(account.value))
     } else {
       ElMessage.error(res.msg)
     }
