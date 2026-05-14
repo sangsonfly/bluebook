@@ -21,11 +21,10 @@ public class RecommendationTask {
     private IRecommendationService recommendationService;
     
     /**
-     * 每30秒执行一次推荐预计算（测试模式）
-     * Cron表达式：30 * * * * ? 表示每30秒执行一次
-     * 注意：测试完成后请改为每小时执行：0 0 * * * ?
+     * 每小时执行一次推荐预计算
+     * Cron表达式：0 0 * * * ? 表示整点执行
      */
-    @Scheduled(cron = "*/30 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void precomputeRecommendations() {
         log.info("========== 开始执行推荐结果预计算任务 ==========");
         long startTime = System.currentTimeMillis();

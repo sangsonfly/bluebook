@@ -54,7 +54,7 @@ const categoryIcons = {
 }
 
 const categories = ref([
-  { id: 'all', name: '热门推荐' },
+  { id: 'all', name: '热门内容' },
   { id: '学习经验', name: '学习经验' },
   { id: '社团活动', name: '社团活动' },
   { id: '校园活动', name: '校园活动' },
@@ -134,13 +134,15 @@ const loadNotes = async () => {
   }
 }
 
+// 模块级变量：不受组件 keep-alive/HMR 生命周期影响
+let skipNextHomeLoad = false
+
 watch(
   () => `${route.path}|${route.query.q ?? ''}`,
-  (newVal, oldVal) => {
+  () => {
     if (route.path === '/front/home') {
-      // 从其他内部页面（笔记详情/用户主页/社团详情）返回时，不重新加载推荐
-      const oldPath = oldVal?.split('|')[0]
-      if (oldPath && oldPath.startsWith('/front/') && oldPath !== '/front/home') {
+      if (skipNextHomeLoad) {
+        skipNextHomeLoad = false
         return
       }
       loadNotes()
@@ -161,23 +163,32 @@ const loadClubs = async () => {
 }
 
 const goToDetail = (id) => {
+  skipNextHomeLoad = true
   router.push(`/front/note/${id}`)
 }
 
 const goToUserProfile = (userId) => {
   if (!userId) return
+  skipNextHomeLoad = true
   router.push(`/front/user/${userId}`)
 }
 
 const goToClub = (clubId) => {
   if (!clubId) return
+  skipNextHomeLoad = true
   router.push(`/front/club/${clubId}`)
 }
 
 const handleLike = async (id, event) => {
   event.stopPropagation()
+  const account = JSON.parse(localStorage.getItem('account') || 'null')
+  if (!account || !account.id) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
   try {
-    await likeNote(id)
+    await likeNote(id, account.id)
     ElMessage.success('点赞成功')
   } catch {
     ElMessage.error('点赞失败')
