@@ -301,9 +301,9 @@ const handleLike = async () => {
   try {
     const res = await likeNote(note.value.id, account.value.id)
     if (res.code === 200 || res.code === '200') {
-      isLiked.value = res.data // true-点赞成功，false-取消点赞
+      isLiked.value = res.data
       ElMessage.success(isLiked.value ? '点赞成功' : '已取消点赞')
-      loadNoteDetail()
+      note.value.likes = (note.value.likes || 0) + (isLiked.value ? 1 : -1)
     } else {
       ElMessage.error(res.msg || '操作失败')
     }
@@ -326,9 +326,9 @@ const handleCollect = async () => {
   try {
     const res = await collectNote(note.value.id, account.value.id)
     if (res.code === 200 || res.code === '200') {
-      isCollected.value = res.data // true-收藏成功，false-取消收藏
+      isCollected.value = res.data
       ElMessage.success(isCollected.value ? '收藏成功' : '已取消收藏')
-      loadNoteDetail()
+      note.value.collects = (note.value.collects || 0) + (isCollected.value ? 1 : -1)
     } else {
       ElMessage.error(res.msg || '操作失败')
     }
