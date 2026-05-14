@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.entity.UserBehavior;
 import com.example.springboot.mapper.UserBehaviorMapper;
-import com.example.springboot.service.IRecommendationService;
 import com.example.springboot.service.IUserBehaviorService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +24,6 @@ public class UserBehaviorServiceImpl extends ServiceImpl<UserBehaviorMapper, Use
     @Resource
     private UserBehaviorMapper userBehaviorMapper;
 
-    @Lazy
-    @Resource
-    private IRecommendationService recommendationService;
-    
     @Override
     public void recordBehavior(Integer userId, Integer noteId, Integer behaviorType) {
         // 调用完整版方法，duration传null
@@ -60,10 +54,7 @@ public class UserBehaviorServiceImpl extends ServiceImpl<UserBehaviorMapper, Use
         
         userBehaviorMapper.insert(behavior);
 
-        // 点赞/收藏/评论/分享行为触发异步个人推荐重算，浏览行为因频率过高不触发
-        if (behaviorType != UserBehavior.BEHAVIOR_VIEW) {
-            recommendationService.precomputeRecommendationsForUser(userId);
-        }
+        // 推荐重算由定时任务（每30秒）统一处理，单个行为不再独立触发
     }
     
     @Override

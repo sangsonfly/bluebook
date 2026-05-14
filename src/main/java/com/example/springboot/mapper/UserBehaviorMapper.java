@@ -53,10 +53,10 @@ public interface UserBehaviorMapper extends BaseMapper<UserBehavior> {
     List<Map<String, Object>> getUserBehaviorVector(@Param("userId") Integer userId);
     
     /**
-     * 获取活跃用户列表（最近30天）
+     * 获取最近有新行为的用户列表（30秒窗口，与定时任务频率一致）
      */
     @Select("SELECT DISTINCT user_id FROM user_behavior " +
-            "WHERE create_time >= DATE_SUB(NOW(), INTERVAL 30 DAY) " +
+            "WHERE create_time >= DATE_SUB(NOW(), INTERVAL 30 SECOND) " +
             "LIMIT #{limit}")
     List<Integer> getActiveUserIds(@Param("limit") Integer limit);
 

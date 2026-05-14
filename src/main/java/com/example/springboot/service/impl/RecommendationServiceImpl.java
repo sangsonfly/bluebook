@@ -163,7 +163,6 @@ public class RecommendationServiceImpl implements IRecommendationService {
     }
     
     @Override
-    @Async
     @Transactional
     public void precomputeRecommendationsForUser(Integer userId) {
         try {
